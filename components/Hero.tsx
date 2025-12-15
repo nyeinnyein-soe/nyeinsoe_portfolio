@@ -1,5 +1,6 @@
 import React from 'react';
 import { Mail, Phone, MapPin, Linkedin, Github, Download, Terminal, ChevronDown } from 'lucide-react';
+import photo from "../img/nns.jpg";
 
 const Hero: React.FC = () => {
   const scrollToContact = () => {
@@ -94,7 +95,7 @@ const Hero: React.FC = () => {
                 <div className="relative h-80 w-80 sm:h-96 sm:w-96 rounded-3xl p-2 bg-white dark:bg-slate-800 shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500">
                    <div className="h-full w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 relative">
                       <img 
-                          src="../img/nns.jpg"
+                          src={photo}
                           alt="Nyein Nyein Soe" 
                           className="h-full w-full object-cover"
                       />
