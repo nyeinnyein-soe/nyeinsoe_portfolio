@@ -109,8 +109,8 @@ const Hero: React.FC = () => {
                             <Terminal className="h-5 w-5" />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-500 dark:text-slate-300 font-semibold uppercase tracking-wider">Certified</p>
-                            <p className="text-sm font-bold text-slate-900 dark:text-white">ITPEC FE Engineer</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-300 font-semibold uppercase tracking-wider">Profectional</p>
+                            <p className="text-sm font-bold text-slate-900 dark:text-white">IT Specilist</p>
                         </div>
                     </div>
                 </div>
