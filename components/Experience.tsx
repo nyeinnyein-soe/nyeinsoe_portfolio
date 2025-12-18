@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Section from './Section';
 import { Briefcase, Calendar, MapPin, ChevronDown, ChevronUp, CircleDot } from 'lucide-react';
 import { ExperienceItem } from '../types';
@@ -34,17 +34,24 @@ const experiences: ExperienceItem[] = [
 
 const Experience: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [isPDF, setIsPDF] = useState(false);
+
+  useEffect(() => {
+    setIsPDF(document.body.classList.contains("pdf-mode"));
+  }, []);
 
   const toggleAccordion = (index: number) => {
+    if (isPDF) return; // 🚫 disable accordion in PDF
+
     if (openIndex === index) {
       setOpenIndex(null);
     } else {
       setOpenIndex(index);
-      // Wait for the accordion to start opening then scroll into view
+
       setTimeout(() => {
         const element = document.getElementById(`experience-${index}`);
         if (element) {
-          const yOffset = -100; // Offset for sticky navbar
+          const yOffset = -100;
           const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
           window.scrollTo({ top: y, behavior: 'smooth' });
         }
@@ -52,25 +59,30 @@ const Experience: React.FC = () => {
     }
   };
 
+
   return (
     <Section id="experience" title="Professional Experience" icon={<Briefcase className="h-8 w-8" />} className="bg-transparent">
       <div className="flex flex-col gap-6 max-w-4xl mx-auto">
         {experiences.map((job, index) => {
-          const isOpen = openIndex === index;
+          const isOpen = isPDF || openIndex === index;
           return (
-            <div 
+            <div
               key={index}
               id={`experience-${index}`}
-              className={`rounded-2xl transition-all duration-300 overflow-hidden ${
-                isOpen 
-                  ? 'bg-white dark:bg-slate-900 shadow-xl border-l-4 border-l-primary ring-1 ring-slate-200 dark:ring-slate-800' 
-                  : 'bg-white dark:bg-slate-900/60 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer border-l-4 border-l-transparent'
-              }`}
+              className={`rounded-2xl overflow-hidden ${isPDF ? '' : 'transition-all duration-300'
+                } ${isOpen
+                  ? 'bg-white dark:bg-slate-900 shadow-xl border-l-4 border-l-primary ring-1 ring-slate-200 dark:ring-slate-800'
+                  : 'bg-white dark:bg-slate-900/60 shadow-sm border-l-4 border-l-transparent'
+                } ${isPDF ? '' : 'hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer'
+                }`}
             >
+
               {/* Header */}
-              <div 
+              <div
                 onClick={() => toggleAccordion(index)}
-                className="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
+                className={`p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4 ${isPDF ? '' : 'cursor-pointer'
+                  }`}
+
               >
                 <div className="flex items-start gap-4">
                   <div className={`mt-1 p-2 rounded-lg transition-colors ${isOpen ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
@@ -91,30 +103,39 @@ const Experience: React.FC = () => {
                     <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> {job.period}</span>
                     <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> {job.location}</span>
                   </div>
-                  <div className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : 'text-slate-400'}`}>
-                    <ChevronDown className="h-6 w-6" />
-                  </div>
+                  {!isPDF && (
+                    <div className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : 'text-slate-400'}`}>
+                      <ChevronDown className="h-6 w-6" />
+                    </div>
+                  )}
+
                 </div>
               </div>
 
               {/* Content */}
-              <div 
-                className={`transition-all duration-300 ease-in-out ${
-                  isOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
-                }`}
+              <div
+                key={index}
+                id={`experience-${index}`}
+                className={`rounded-2xl overflow-hidden ${isPDF ? '' : 'transition-all duration-300'
+                  } ${isOpen
+                    ? 'bg-white dark:bg-slate-900 shadow-xl border-l-4 border-l-primary ring-1 ring-slate-200 dark:ring-slate-800'
+                    : 'bg-white dark:bg-slate-900/60 shadow-sm border-l-4 border-l-transparent'
+                  } ${isPDF ? '' : 'hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer'
+                  }`}
               >
+
                 <div className="px-6 pb-8 md:px-8 md:pl-24 pt-0 border-t border-slate-100 dark:border-slate-800/50 mt-2">
-                   <div className="pt-6">
-                      <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">Key Responsibilities</h4>
-                      <ul className="space-y-4">
-                        {job.description.map((desc, i) => (
-                          <li key={i} className="flex items-start gap-3 text-slate-700 dark:text-slate-300 leading-relaxed text-base">
-                            <CircleDot className="h-4 w-4 text-primary dark:text-teal-500 flex-shrink-0 mt-1.5" />
-                            <span>{desc}</span>
-                          </li>
-                        ))}
-                      </ul>
-                   </div>
+                  <div className="pt-6">
+                    <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">Key Responsibilities</h4>
+                    <ul className="space-y-4">
+                      {job.description.map((desc, i) => (
+                        <li key={i} className="flex items-start gap-3 text-slate-700 dark:text-slate-300 leading-relaxed text-base">
+                          <CircleDot className="h-4 w-4 text-primary dark:text-teal-500 flex-shrink-0 mt-1.5" />
+                          <span>{desc}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
